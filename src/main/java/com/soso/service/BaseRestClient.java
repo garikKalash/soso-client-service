@@ -19,7 +19,6 @@ public class BaseRestClient {
         initializeBaseUrl(serviceId);
        }
 
-    @PostConstruct
     protected void initializeBaseUrl(Integer serviceId){
         String serviceDetailByIdJSONString =  new ServicesDetailService().getInfoByServiceId(serviceId);
         destinationService =  JsonConverter.getServiceInfoFromJSONString(serviceDetailByIdJSONString);
@@ -38,7 +37,7 @@ public class BaseRestClient {
 
 
     private class ServicesDetailService {
-        private String baseServicesDetailServiceUrl = "http://localhost:9011/";
+        private String baseServicesDetailServiceUrl = "https://pure-badlands-72083.herokuapp.com/";
 
         private String getInfoByServiceId(Integer serviceId){
             return restTemplate.getForObject(baseServicesDetailServiceUrl + "serviceDetails/" + serviceId,String.class);

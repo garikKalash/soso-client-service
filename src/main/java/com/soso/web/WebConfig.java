@@ -1,8 +1,11 @@
 package com.soso.web;
 
+import com.soso.models.ServiceInfo;
+import com.soso.service.ClientService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -11,18 +14,22 @@ import org.springframework.web.servlet.config.annotation.*;
 import javax.sql.DataSource;
 
 @Configuration
+@ComponentScan
 @EnableWebMvc
-@ComponentScan("com.soso.controller")
+@PropertySource(value = { "classpath:application.properties" })
 public class WebConfig
         extends WebMvcConfigurerAdapter {
 
     @Bean
     public DataSource dataSource() {
+        ClientService clientService = new ClientService(1);
+        ServiceInfo serviceInfo = clientService.getDestinationService();
+
         DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setDriverClassName("org.postgresql.Driver");
-        ds.setUrl("jdbc:postgresql://localhost:5432/soso-client-service-db");
-        ds.setUsername("postgres");
-        ds.setPassword("0944477522gar");
+        ds.setDriverClassName(serviceInfo.getDbConnectionMetaData().getDriverClassName());
+        ds.setUrl(serviceInfo.getDbConnectionMetaData().getUrl());
+        ds.setUsername(serviceInfo.getDbConnectionMetaData().getUsername());
+        ds.setPassword(serviceInfo.getDbConnectionMetaData().getPassword());
         return ds;
     }
 

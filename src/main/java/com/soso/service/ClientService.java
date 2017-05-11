@@ -7,6 +7,7 @@ import com.soso.service.common_data.CommonDataService;
 import com.soso.service.eventListener.EventListenerClient;
 import com.soso.service.partner.PartnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +20,7 @@ import java.util.List;
  */
 
 @Repository
-public class ClientService {
+public class ClientService extends BaseRestClient {
     private final Integer selfId = 1;
 
 
@@ -28,6 +29,11 @@ public class ClientService {
 
     @Autowired
     private ClientDAO clientDAO;
+
+    @Autowired
+    public ClientService(@Value("${clientservice.id}") Integer defaultId){
+        super(defaultId);
+    }
 
     public boolean isValidToken(Integer itemId,String token) {
         return authenticationTokenService.isValidToken(selfId,itemId, token);
