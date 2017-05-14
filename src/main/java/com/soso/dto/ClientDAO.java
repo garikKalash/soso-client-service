@@ -1,7 +1,6 @@
 package com.soso.dto;
 
 import com.soso.models.Client;
-import com.soso.models.Partner;
 import com.soso.service.BaseSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,7 +22,6 @@ public class ClientDAO {
     private final String GET_CLIENT_BY_DETAILS_QUERY = "SELECT id FROM public.Client WHERE telephone= :telephone AND password = :password";
 
 
-
     @Autowired
     private NamedParameterJdbcOperations namedParameterJdbcOperations;
 
@@ -33,9 +31,14 @@ public class ClientDAO {
 
 
     public Client getClientById(Integer partnerId) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", partnerId);
-        return getNamedParameterJdbcOperations().queryForObject(GET_CLIENT_BY_ID_QUERY, paramMap, new BeanPropertyRowMapper<>(Client.class));
+        try {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("id", partnerId);
+            return getNamedParameterJdbcOperations().queryForObject(GET_CLIENT_BY_ID_QUERY, paramMap, new BeanPropertyRowMapper<>(Client.class));
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+
     }
 
     public Client getClientMainDetailsById(Integer partnerId) {
@@ -45,27 +48,36 @@ public class ClientDAO {
     }
 
     public Integer addClient(Client item) {
-        String createUserQuery = "SELECT addclient ( :fname, :telephone, :password)";
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("fname", item.getName());
-        paramMap.put("password", BaseSecurity.getMd5Version(item.getPassword()));
-        paramMap.put("telephone", item.getTelephone());
-        return getNamedParameterJdbcOperations().queryForObject(createUserQuery, paramMap, Integer.class);
+        try {
+            String createUserQuery = "SELECT addclient ( :fname, :telephone, :password)";
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("fname", item.getName());
+            paramMap.put("password", BaseSecurity.getMd5Version(item.getPassword()));
+            paramMap.put("telephone", item.getTelephone());
+            return getNamedParameterJdbcOperations().queryForObject(createUserQuery, paramMap, Integer.class);
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+
     }
 
-    public List<Client> getClientByTelephone(String telephone){
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("telephone", telephone);
-        return getNamedParameterJdbcOperations().query("SELECT * FROM public.Client WHERE telephone= :telephone",paramMap,new BeanPropertyRowMapper<>(Client.class));
+    public List<Client> getClientByTelephone(String telephone) {
+        try {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("telephone", telephone);
+            return getNamedParameterJdbcOperations().query("SELECT * FROM public.Client WHERE telephone= :telephone", paramMap, new BeanPropertyRowMapper<>(Client.class));
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
     }
 
-    public Integer signinClient(String telephone,String password){
+    public Integer signinClient(String telephone, String password) {
         try {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("telephone", telephone);
             paramMap.put("password", BaseSecurity.getMd5Version(password));
             return getNamedParameterJdbcOperations().queryForObject(GET_CLIENT_BY_DETAILS_QUERY, paramMap, Integer.class);
-        }catch (EmptyResultDataAccessException ex){
+        } catch (EmptyResultDataAccessException ex) {
             return null;
         }
     }

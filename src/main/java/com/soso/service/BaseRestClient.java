@@ -1,9 +1,9 @@
 package com.soso.service;
 
 import com.soso.models.ServiceInfo;
+import com.soso.web.AppModeResolver;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -14,14 +14,14 @@ public class BaseRestClient {
     private ServiceInfo destinationService;
 
 
-    protected BaseRestClient(@NotNull Integer serviceId){
+    protected BaseRestClient(@NotNull Integer serviceId) {
         restTemplate = new RestTemplate();
         initializeBaseUrl(serviceId);
-       }
+    }
 
-    protected void initializeBaseUrl(Integer serviceId){
-        String serviceDetailByIdJSONString =  new ServicesDetailService().getInfoByServiceId(serviceId);
-        destinationService =  JsonConverter.getServiceInfoFromJSONString(serviceDetailByIdJSONString);
+    protected void initializeBaseUrl(Integer serviceId) {
+        String serviceDetailByIdJSONString = new ServicesDetailService().getInfoByServiceId(serviceId);
+        destinationService = JsonConverter.getServiceInfoFromJSONString(serviceDetailByIdJSONString);
     }
 
     public RestTemplate getRestTemplate() {
@@ -33,14 +33,11 @@ public class BaseRestClient {
     }
 
 
-
-
-
     private class ServicesDetailService {
-        private String baseServicesDetailServiceUrl = "https://pure-badlands-72083.herokuapp.com/";
+        private String baseServicesDetailServiceUrl = new AppModeResolver().isLocalMode() ? "http://localhost:9011" : "https://pure-badlands-72083.herokuapp.com/";
 
-        private String getInfoByServiceId(Integer serviceId){
-            return restTemplate.getForObject(baseServicesDetailServiceUrl + "serviceDetails/" + serviceId,String.class);
+        private String getInfoByServiceId(Integer serviceId) {
+            return restTemplate.getForObject(baseServicesDetailServiceUrl + "serviceDetails/" + serviceId, String.class);
         }
 
 
