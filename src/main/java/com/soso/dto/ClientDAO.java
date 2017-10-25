@@ -49,10 +49,9 @@ public class ClientDAO {
 
     public Integer addClient(Client item) {
         try {
-            String createUserQuery = "SELECT addclient ( :fname, :telephone, :password)";
+            String createUserQuery = "SELECT addclient ( :fname, :telephone)";
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("fname", item.getName());
-            paramMap.put("password", BaseSecurity.getMd5Version(item.getPassword()));
             paramMap.put("telephone", item.getTelephone());
             return getNamedParameterJdbcOperations().queryForObject(createUserQuery, paramMap, Integer.class);
         } catch (EmptyResultDataAccessException ex) {

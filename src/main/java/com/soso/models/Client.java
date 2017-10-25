@@ -13,7 +13,6 @@ public class Client {
         this.name = name;
 
         this.telephone = telephone;
-        this.password = password;
     }
 
     public Integer getId() {
@@ -40,17 +39,8 @@ public class Client {
         this.telephone = telephone;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     private Integer id;
     private String name;
     private String telephone;
-    private String password;
 
 }
