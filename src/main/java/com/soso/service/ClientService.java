@@ -4,6 +4,7 @@ import com.soso.dto.ClientDAO;
 import com.soso.models.Client;
 import com.soso.service.authentication.AuthenticationTokenService;
 import com.soso.service.eventListener.EventListenerClient;
+import com.soso.validators.ClientDtoVallidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -38,16 +39,20 @@ public class ClientService extends BaseRestClient {
         return clientDAO.getClientById(clientId);
     }
 
-    public Integer addClient(Client client) {
-        List<Client> clientListViaTelephone = clientDAO.getClientByTelephone(client.getTelephone());
-
-        // this case shows us that we have already user with the same telephone
-        // and we need not to add new one client
-        if(!clientListViaTelephone.isEmpty()){
-            return  clientListViaTelephone.get(0).getId();
+    public JsonMapBuilder addClient(Client client) {
+        if(ClientDtoVallidator.validateClientDto(client) == null){
+            JsonMapBuilder json = new JsonMapBuilder();
+            List<Client> clientListViaTelephone = clientDAO.getClientByTelephone(client.getTelephone());
+            // this case shows us that we have already user with the same telephone
+            // and we need not to add new one client
+            if(!clientListViaTelephone.isEmpty()){
+                return  json.add("clientId",clientListViaTelephone.get(0).getId());
+            }else{
+                return json.add("clientId",clientDAO.addClient(client));
+            }
+        }else{
+            return ClientDtoVallidator.validateClientDto(client);
         }
-
-        return clientDAO.addClient(client);
     }
 
     public Integer signinClient(String telephone, String password) {

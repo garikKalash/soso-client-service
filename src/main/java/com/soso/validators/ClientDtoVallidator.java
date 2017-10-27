@@ -1,10 +1,7 @@
 package com.soso.validators;
 
-import com.soso.dto.ClientDAO;
 import com.soso.models.Client;
 import com.soso.service.JsonMapBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * Created by Garik Kalashyan on 4/26/2017.
  */

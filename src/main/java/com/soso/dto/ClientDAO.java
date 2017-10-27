@@ -34,12 +34,13 @@ public class ClientDAO {
         try {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("id", partnerId);
-            return getNamedParameterJdbcOperations().queryForObject(GET_CLIENT_BY_ID_QUERY, paramMap, new BeanPropertyRowMapper<>(Client.class));
+            return getNamedParameterJdbcOperations().queryForObject( GET_CLIENT_BY_ID_QUERY, paramMap, new BeanPropertyRowMapper<>(Client.class));
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }
 
     }
+
 
     public Client getClientMainDetailsById(Integer partnerId) {
         Map<String, Object> paramMap = new HashMap<>();
@@ -80,6 +81,4 @@ public class ClientDAO {
             return null;
         }
     }
-
-
 }
